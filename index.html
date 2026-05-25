@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Novaspand  · a multi-product technology studio</title>
+  <meta name="description" content="A multi-product technology studio. ERP, open-source tools, and Laravel packages. Built with purpose." />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Mulish:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #faf7f4;
+      --color-surface: #f3efe9;
+      --color-text-primary: #1c1a18;
+      --color-text-secondary: #6b6560;
+      --color-text-tertiary: #a09890;
+      --color-accent: #c4622d;
+      --color-accent-light: #e8845a;
+      --color-border: #e2dbd3;
+      --color-border-strong: #c8bfb5;
+      --font-display: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+      --font-body: 'Mulish', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-slow: 600ms;
+      --duration-medium: 400ms;
+      --duration-fast: 200ms;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --space-3xl: 64px;
+      --space-4xl: 96px;
+      --space-5xl: 128px;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    ::selection {
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    .accent {
+      color: var(--color-accent);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(36px, 5vw, 72px);
+      line-height: 1.1;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-sub {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(20px, 2.5vw, 30px);
+      line-height: 1.3;
+      color: var(--color-text-secondary);
+      max-width: 40ch;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 32px;
+      background-color: var(--color-accent);
+      color: #faf7f4;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      transition: background-color var(--duration-fast) ease;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus-visible {
+      background-color: var(--color-accent-light);
+      color: #faf7f4;
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity var(--duration-slow) var(--ease-out-expo),
+                  transform var(--duration-slow) var(--ease-out-expo);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-fast {
+      transition-duration: var(--duration-medium);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-lg) var(--space-3xl);
+      background-color: transparent;
+      transition: background-color var(--duration-fast) ease,
+                  border-color var(--duration-fast) ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .nav-scrolled {
+      background-color: var(--color-bg);
+      border-bottom-color: var(--color-border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-text-primary);
+    }
+
+    .nav-logo:hover {
+      color: var(--color-text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xl);
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color var(--duration-fast) ease,
+                  border-color var(--duration-fast) ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      color: var(--color-text-primary);
+      border-bottom-color: var(--color-accent);
+      outline: none;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: var(--space-5xl) var(--space-3xl);
+      padding-top: calc(var(--space-5xl) + 80px);
+    }
+
+    .hero-content {
+      max-width: 900px;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(56px, 8vw, 120px);
+      line-height: 1;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-xl);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--color-text-secondary);
+      max-width: 520px;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    .what-we-do {
+      padding: var(--space-5xl) var(--space-3xl);
+      background-color: var(--color-surface);
+    }
+
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .what-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3xl);
+      margin-top: var(--space-2xl);
+    }
+
+    .what-item {
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .what-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.2;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .what-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+    }
+
+    .why {
+      padding: var(--space-5xl) var(--space-3xl);
+    }
+
+    .section-sub {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .values-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .value-item {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: var(--space-lg);
+      padding: var(--space-2xl) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .value-item:first-child {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .value-number {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.2;
+      color: var(--color-text-tertiary);
+    }
+
+    .value-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.2;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .value-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      max-width: 55ch;
+    }
+
+    .work {
+      padding: var(--space-5xl) var(--space-3xl);
+      background-color: var(--color-surface);
+    }
+
+    .work-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .work-item {
+      display: block;
+      padding: var(--space-2xl);
+      border: 1px solid var(--color-border);
+      transition: border-color var(--duration-fast) ease,
+                  box-shadow var(--duration-fast) ease;
+    }
+
+    .work-item + .work-item {
+      border-top: none;
+    }
+
+    .work-item:hover,
+    .work-item:focus-within {
+      border-color: var(--color-border-strong);
+      box-shadow: 0 1px 3px rgba(28, 26, 24, 0.06);
+    }
+
+    .work-meta {
+      margin-bottom: var(--space-sm);
+    }
+
+    .work-tag {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .work-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.2;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .work-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      max-width: 55ch;
+    }
+
+    .work-link {
+      color: inherit;
+    }
+
+    .work-link::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+
+    .work-item {
+      position: relative;
+    }
+
+    .contact {
+      padding: var(--space-5xl) var(--space-3xl);
+      text-align: center;
+    }
+
+    .contact .section-inner {
+      max-width: 640px;
+    }
+
+    .contact-text {
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+    }
+
+    .footer {
+      padding: var(--space-xl) var(--space-3xl);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--color-text-tertiary);
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        padding: var(--space-md) var(--space-lg);
+      }
+
+      .nav-links {
+        gap: var(--space-lg);
+      }
+
+      .hero {
+        padding: var(--space-3xl) var(--space-lg);
+        padding-top: calc(var(--space-3xl) + 80px);
+      }
+
+      .hero-subtitle {
+        font-size: 16px;
+      }
+
+      .what-we-do,
+      .why,
+      .work,
+      .contact {
+        padding: var(--space-3xl) var(--space-lg);
+      }
+
+      .what-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+      }
+
+      .value-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .work-item {
+        padding: var(--space-lg);
+      }
+
+      .footer {
+        padding: var(--space-lg) var(--space-lg);
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: var(--space-sm);
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-headline {
+        font-size: clamp(40px, 12vw, 56px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="sr-only" style="position:absolute;left:16px;top:16px;background:var(--color-accent);color:#faf7f4;padding:8px 16px;z-index:200;font-size:14px;clip:auto;width:auto;height:auto;margin:0;overflow:visible">Skip to main content</a>
+
+  <nav class="nav" aria-label="Main navigation">
+    <a href="/" class="nav-logo">Novaspand</a>
+    <div class="nav-links">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a href="novaspand.html" class="nav-link">Alternative</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-content">
+        <h1 class="hero-headline">
+          Novaspand
+          <span class="accent">studio</span>
+        </h1>
+        <p class="hero-subtitle">
+          A multi-product technology studio. We build ERP systems, Laravel packages,
+          open-source tools, and whatever solves a real problem next.
+        </p>
+        <div class="hero-cta">
+          <a href="#contact" class="btn-primary">Start a conversation</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="what-we-do" aria-label="What we do">
+      <div class="section-inner">
+        <p class="section-eyebrow">// 01 · scope</p>
+        <h2 class="section-title">What we build</h2>
+        <div class="what-grid">
+          <div class="what-item">
+            <h3 class="what-heading">ERP systems</h3>
+            <p class="what-desc">
+              Production-grade systems for manufacturing, distribution, and logistics.
+              Built to handle scale without accumulating tech debt.
+            </p>
+          </div>
+          <div class="what-item">
+            <h3 class="what-heading">Laravel packages</h3>
+            <p class="what-desc">
+              Open-source packages the ecosystem depends on. Clean APIs, thorough
+              documentation, zero unnecessary abstraction.
+            </p>
+          </div>
+          <div class="what-item">
+            <h3 class="what-heading">Open-source tools</h3>
+            <p class="what-desc">
+              Utilities and libraries that solve real problems. If it needs to exist,
+              we build it properly and give it back to the community.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why" aria-label="Why Novaspand">
+      <div class="section-inner">
+        <p class="section-eyebrow">// 02 · approach</p>
+        <h2 class="section-title">Why Novaspand</h2>
+        <p class="section-sub">
+          We work like a lab, not an agency. We ship like a product company,
+          not a consultancy.
+        </p>
+        <div class="values-grid">
+          <div class="value-item">
+            <span class="value-number">01</span>
+            <div>
+              <h3 class="value-heading">Grounded</h3>
+              <p class="value-desc">
+                Every decision earns its place. No feature built because it looked
+                good in a roadmap. No code written because someone read a blog post.
+              </p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-number">02</span>
+            <div>
+              <h3 class="value-heading">Precise</h3>
+              <p class="value-desc">
+                Production-grade means something here. Every package ships with
+                tests, documentation, and a clear contract. No half-measures.
+              </p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-number">03</span>
+            <div>
+              <h3 class="value-heading">Unexpected</h3>
+              <p class="value-desc">
+                We don't follow templates. Every project gets the approach it
+                deserves, not the one everyone else is using.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="work" aria-label="Work and products">
+      <div class="section-inner">
+        <p class="section-eyebrow">// 03 · work</p>
+        <h2 class="section-title">What we've built</h2>
+        <p class="section-sub">
+          A selection of products and packages we maintain. Each one solves
+          a problem we had ourselves.
+        </p>
+        <div class="work-list">
+          <div class="work-item">
+            <div class="work-meta">
+              <span class="work-tag">ERP</span>
+            </div>
+            <h3 class="work-name">Spand Manufacturing</h3>
+            <p class="work-desc">
+              Production ERP for small and mid-size manufacturers. Inventory,
+              orders, BOMs, and shop floor control.
+            </p>
+            <a href="#" class="work-link sr-only" aria-label="View Spand Manufacturing details">View details</a>
+          </div>
+          <div class="work-item">
+            <div class="work-meta">
+              <span class="work-tag">Open source</span>
+            </div>
+            <h3 class="work-name">NovaKit</h3>
+            <p class="work-desc">
+              A Laravel toolkit used by thousands of teams. Queue management,
+              billing, notifications, and admin panels.
+            </p>
+            <a href="#" class="work-link sr-only" aria-label="View NovaKit details">View details</a>
+          </div>
+          <div class="work-item">
+            <div class="work-meta">
+              <span class="work-tag">Package</span>
+            </div>
+            <h3 class="work-name">SpandQL</h3>
+            <p class="work-desc">
+              GraphQL tooling for Laravel that doesn't get in your way.
+              Type-safe, fast, and thoroughly documented.
+            </p>
+            <a href="#" class="work-link sr-only" aria-label="View SpandQL details">View details</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-label="Contact">
+      <div class="section-inner">
+        <p class="section-eyebrow">// 04 · contact</p>
+        <h2 class="section-title">Get in touch</h2>
+        <p class="contact-text">
+          Tell us what you are building. We will tell you if we can help.
+        </p>
+        <div class="contact-actions">
+          <a href="mailto:hello@novaspand.com" class="btn-primary">hello@novaspand.com</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <span class="footer-text">&copy; Novaspand</span>
+      <span class="footer-text">Nava · Spanda · the creative pulse</span>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.querySelector('.nav');
+    document.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.classList.add('nav-scrolled');
+      } else {
+        nav.classList.remove('nav-scrolled');
+      }
+    }, { passive: true });
+
+    const revealElements = document.querySelectorAll('.what-item, .value-item, .work-item, .section-eyebrow, .section-title, .section-sub, .hero .hero-subtitle, .hero .hero-cta, .contact-text, .contact-actions');
+    const heroTitle = document.querySelector('.hero-headline');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          entry.target.style.transitionDelay = `${index * 80}ms`;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => {
+      el.classList.add('reveal');
+      observer.observe(el);
+    });
+
+    heroTitle.style.opacity = '1';
+    heroTitle.style.transform = 'none';
+
+    const heroChildren = document.querySelectorAll('.hero .hero-headline .accent');
+    if (heroChildren) {
+      heroChildren.forEach(c => {
+        c.style.opacity = '1';
+        c.style.transform = 'none';
+      });
+    }
+  </script>
+</body>
+</html>

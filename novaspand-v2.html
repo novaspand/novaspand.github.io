@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Novaspand · A multi-product technology studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #e2d7c9;
+    --surface: #d9ccbc;
+    --text: #1c1a18;
+    --text-secondary: #635a50;
+    --text-tertiary: #94887a;
+    --accent: #c4622d;
+    --accent-light: #e8845a;
+    --border: #cec0af;
+    --border-strong: #baab98;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: .02;
+  }
+
+  /* ── CANVAS BG ── */
+  #bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 48px;
+    background: linear-gradient(to bottom, rgba(226,215,201,.92) 0%, transparent 100%);
+    backdrop-filter: blur(0px);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    text-decoration: none;
+    position: relative;
+  }
+  .nav-logo::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width .4s ease;
+  }
+  .nav-logo:hover::after { width: 100%; }
+
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color .3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 10px 22px;
+    transition: background .3s;
+  }
+  .nav-cta:hover { background: var(--accent-light); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp .7s .3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(64px, 12vw, 160px);
+    line-height: .95;
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+    position: relative;
+  }
+  .hero-title .line1 {
+    display: block;
+    opacity: 0; transform: translateY(60px);
+    animation: fadeUp .8s .5s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .hero-title .line2 {
+    display: block;
+    color: var(--accent);
+    opacity: 0; transform: translateY(60px);
+    animation: fadeUp .8s .65s cubic-bezier(.16,1,.3,1) forwards;
+  }
+
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: clamp(15px, 2vw, 20px);
+    font-weight: 400;
+    color: var(--text-secondary);
+    max-width: 520px;
+    line-height: 1.7;
+    margin: 36px auto 0;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp .7s .9s forwards;
+  }
+
+  .hero-sub em {
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px;
+    margin-top: 52px;
+    opacity: 0;
+    animation: fadeUp .7s 1.1s forwards;
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .btn-primary {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 16px 36px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+    transition: background .3s;
+  }
+  .btn-primary:hover { background: var(--accent-light); }
+
+  .btn-ghost {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 16px 36px;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color .3s, color .3s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+  /* pulse orb */
+  .pulse-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: orbPulse 6s ease-in-out infinite;
+  }
+  .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(196,98,45,.25), transparent 70%); top: -100px; left: -150px; animation-delay: 0s; }
+  .orb2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(232,132,90,.18), transparent 70%); bottom: -80px; right: -100px; animation-delay: -3s; }
+  .orb3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(196,98,45,.15), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -1.5s; }
+
+  /* scroll indicator */
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0;
+    animation: fadeUp .7s 1.5s forwards;
+  }
+  .scroll-hint span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  /* ── MARQUEE STRIP ── */
+  .marquee-wrap {
+    position: relative; z-index: 2;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 16px 0;
+    background: var(--surface);
+  }
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 22s linear infinite;
+    width: max-content;
+  }
+  .marquee-item {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    padding: 0 48px;
+    white-space: nowrap;
+  }
+  .marquee-item.accent { color: var(--accent); font-weight: 700; }
+  .marquee-sep {
+    color: var(--accent);
+    padding: 0 4px;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    position: relative; z-index: 2;
+    padding: 140px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 24px;
+  }
+  .about-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(50px, 6vw, 90px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .about-title .stroke {
+    color: var(--accent);
+  }
+  .about-body {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-secondary);
+  }
+  .about-body p + p { margin-top: 20px; }
+  .about-body strong { color: var(--text); font-weight: 600; }
+
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    margin-top: 8px;
+  }
+  .stat-box {
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    transition: border-color .3s, background .3s;
+  }
+  .stat-box:hover { border-color: var(--border-strong); background: var(--surface); }
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+  }
+
+  /* ── WHAT WE DO ── */
+  #work {
+    position: relative; z-index: 2;
+    padding: 80px 48px 140px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 64px;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(48px, 7vw, 100px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .section-note {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    max-width: 220px;
+    line-height: 1.6;
+    text-align: right;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .4s, background .4s;
+  }
+  .card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width .5s cubic-bezier(.16,1,.3,1);
+  }
+  .card:hover { border-color: var(--border-strong); background: var(--surface); }
+  .card:hover::after { width: 100%; }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 28px;
+    display: block;
+    opacity: 0.7;
+    transition: opacity .3s, transform .3s;
+  }
+  .card:hover .card-icon { opacity: 1; transform: scale(1.1); }
+
+  .card-num {
+    position: absolute; top: 28px; right: 28px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: var(--text-tertiary);
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  /* ── PHILOSOPHY / MANIFESTO ── */
+  #manifesto {
+    position: relative; z-index: 2;
+    padding: 120px 48px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .manifesto-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .manifesto-quote {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .manifesto-quote .word {
+    display: inline-block;
+    margin: 0 8px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .6s, transform .6s;
+  }
+  .manifesto-quote .word.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .manifesto-quote .accent { color: var(--accent); }
+
+  .manifesto-sub {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-top: 40px;
+    font-style: italic;
+  }
+
+  /* horizontal rule lines */
+  .rule {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0 48px;
+    position: relative; z-index: 2;
+  }
+
+  /* ── IDENTITY GRID ── */
+  #identity {
+    position: relative; z-index: 2;
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .identity-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    margin-top: 64px;
+  }
+  .id-box {
+    border: 1px solid var(--border);
+    padding: 48px 40px;
+    background: var(--bg);
+    transition: border-color .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .id-box:hover { border-color: var(--border-strong); }
+  .id-box.big { grid-row: span 2; }
+  .id-box-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+  }
+  .id-box-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.05;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .id-box-body {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+  .id-box-big-word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 100px;
+    line-height: .9;
+    color: var(--border);
+    position: absolute;
+    bottom: -10px; right: 20px;
+    pointer-events: none;
+    transition: color .3s;
+  }
+  .id-box:hover .id-box-big-word { color: var(--border-strong); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 2;
+    border-top: 1px solid var(--border);
+    padding: 60px 48px;
+    display: flex;
+    align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+  .footer-tagline {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+  }
+  .footer-links {
+    display: flex; gap: 32px; flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color .3s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-copy {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    opacity: 0.7;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes gradShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1) translate(0,0); opacity: .7; }
+    50% { transform: scale(1.15) translate(10px, -10px); opacity: 1; }
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #about { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    #work { padding: 40px 24px 80px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .identity-grid { grid-template-columns: 1fr; }
+    .id-box.big { grid-row: span 1; }
+    footer { padding: 40px 24px; }
+    #manifesto { padding: 80px 24px; }
+    .rule { margin: 0 24px; }
+  }
+
+  /* ── SPANDA RING ANIMATION ── */
+  .spanda-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(196,98,45,.18);
+    pointer-events: none;
+    animation: spandaExpand 4s ease-out infinite;
+  }
+  @keyframes spandaExpand {
+    0% { transform: translate(-50%,-50%) scale(0.5); opacity: .6; }
+    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated canvas background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Novaspand</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">What we build</a></li>
+    <li><a href="#identity">Identity</a></li>
+  </ul>
+  <button class="nav-cta">Say hello</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Pulse orbs -->
+  <div class="pulse-orb orb1"></div>
+  <div class="pulse-orb orb2"></div>
+  <div class="pulse-orb orb3"></div>
+
+  <!-- Spanda rings -->
+  <div class="spanda-ring" style="width:300px;height:300px;top:50%;left:50%;animation-delay:0s;"></div>
+  <div class="spanda-ring" style="width:300px;height:300px;top:50%;left:50%;animation-delay:1.33s;"></div>
+  <div class="spanda-ring" style="width:300px;height:300px;top:50%;left:50%;animation-delay:2.66s;"></div>
+
+  <p class="hero-eyebrow">nava + spanda · the new creative pulse</p>
+
+  <h1 class="hero-title">
+    <span class="line1">We build</span>
+    <span class="line2">things that matter</span>
+  </h1>
+
+  <p class="hero-sub">
+    A <em>multi-product tech studio</em> that solves real problems: ERP systems, open-source tools, and whatever the world needs built next.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#work" class="btn-primary">See what we build</a>
+    <a href="#about" class="btn-ghost">Our story</a>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee-track">
+    <span class="marquee-item">ERP Systems</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Laravel Packages</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Open Source</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Tech Studio</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Real Problems</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Novaspand</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Bold Ideas</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Ship Fast</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">ERP Systems</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Laravel Packages</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Open Source</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Tech Studio</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Real Problems</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Novaspand</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Bold Ideas</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item accent">Ship Fast</span><span class="marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="about-label">// 001 · who we are</p>
+    <h2 class="about-title">
+      Clever.<br>
+      Curious.<br>
+      <span class="stroke">Bold.</span>
+    </h2>
+  </div>
+  <div class="reveal" style="transition-delay:.15s">
+    <div class="about-body">
+      <p>Novaspand is not a company that does <strong>one thing</strong>. We are a tech studio, a lab, built to find real problems and ship real solutions. ERP system today. Laravel package tomorrow. Whatever the world needs next.</p>
+      <p>The name is Sanskrit at its core: <strong>Nava</strong> (the new) meets <strong>Spanda</strong> (the creative pulse, the vibration behind all creation). That is not poetry. That is a mandate.</p>
+      <p>We think in systems, move in days, and measure ourselves by what ships, not what is planned.</p>
+    </div>
+    <div class="about-stats" style="margin-top:40px">
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Problems to solve</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Studio founded</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Days wasted</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">↑</div>
+        <div class="stat-label">Trajectory</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- WHAT WE BUILD -->
+<section id="work">
+  <div class="section-header reveal">
+    <h2 class="section-title">What<br>we build</h2>
+    <p class="section-note">// 002 · products and tools<br>not locked to one category</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card reveal" style="transition-delay:.05s">
+      <span class="card-icon">⚙️</span>
+      <span class="card-num">01</span>
+      <h3 class="card-title">Enterprise Systems</h3>
+      <p class="card-desc">ERP platforms and business software that actually makes sense. No bloat. No endless configuration. Built for people who need to work, not fight their tools.</p>
+    </div>
+    <div class="card reveal" style="transition-delay:.15s">
+      <span class="card-icon">📦</span>
+      <span class="card-num">02</span>
+      <h3 class="card-title">Developer Packages</h3>
+      <p class="card-desc">Laravel packages, open-source libraries, and tools that make other developers' lives meaningfully better. If we needed it and it didn't exist, we build it and ship it.</p>
+    </div>
+    <div class="card reveal" style="transition-delay:.25s">
+      <span class="card-icon">⚡</span>
+      <span class="card-num">03</span>
+      <h3 class="card-title">Whatever's next</h3>
+      <p class="card-desc">We are not category-locked. The studio model means we follow real problems wherever they live: SaaS, tooling, APIs, or something we have not named yet. Stay close.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-quote" id="manifesto-text">
+      <span class="word">"The</span>
+      <span class="word accent">name</span>
+      <span class="word">is</span>
+      <span class="word">the</span>
+      <span class="word">cheapest</span>
+      <span class="word">part.</span>
+      <br>
+      <span class="word">Now</span>
+      <span class="word">we</span>
+      <span class="word" style="color:var(--accent)">ship."</span>
+    </div>
+    <p class="manifesto-sub">· novaspand founding ethos, may 2026</p>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- IDENTITY -->
+<section id="identity">
+  <div class="section-header reveal">
+    <h2 class="section-title">Identity</h2>
+    <p class="section-note">// 003 · name, values,<br>where to find us</p>
+  </div>
+
+  <div class="identity-grid">
+    <div class="id-box big reveal">
+      <p class="id-box-label">The name</p>
+      <h3 class="id-box-title">Novaspand</h3>
+      <p class="id-box-body">From Sanskrit. Nava: new, fresh, innovative. Spanda: the creative pulse, the vibration behind all creation.<br><br>
+      Together: <strong style="color:var(--accent)">the new creative pulse.</strong> Innovation baked into the DNA without screaming it.<br><br>
+      Original. Ownable. Zero SEO competition. A name that makes you pause for half a second, then it clicks.</p>
+      <span class="id-box-big-word">NS</span>
+    </div>
+
+    <div class="id-box reveal" style="transition-delay:.1s">
+      <p class="id-box-label">Core values</p>
+      <h3 class="id-box-title">What<br>drives us</h3>
+      <p class="id-box-body" style="margin-top:12px">Innovation<br>Creativity<br>Problem solving<br>Shipping daily</p>
+    </div>
+
+    <div class="id-box reveal" style="transition-delay:.2s">
+      <p class="id-box-label">Personality</p>
+      <h3 class="id-box-title">How we<br>show up</h3>
+      <p class="id-box-body" style="margin-top:12px">Clever. Not arrogant.<br>Curious. Always.<br>Bold. Unapologetically.</p>
+    </div>
+
+    <div class="id-box reveal" style="transition-delay:.3s">
+      <p class="id-box-label">Find us</p>
+      <p class="id-box-body" style="margin-top:4px; font-family:var(--font-body); font-size:12px; line-height:2.2;">
+        novaspand.com<br>
+        x.com/@novaspand<br>
+        github.com/novaspand<br>
+        linkedin.com/company/novaspand<br>
+        instagram.com/@novaspand
+      </p>
+    </div>
+
+    <div class="id-box reveal" style="transition-delay:.4s; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+      <p class="id-box-label">Status</p>
+      <div style="width:8px;height:8px;background:var(--accent);border-radius:50%;margin-bottom:12px;"></div>
+      <p style="font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text)">Live and building</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Novaspand</div>
+    <div class="footer-tagline">The new creative pulse</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">X / Twitter</a>
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Instagram</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 Novaspand. We ship.</div>
+</footer>
+
+<script>
+// ── CANVAS PARTICLES
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.size = Math.random() * 1.5 + 0.3;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.3 + 0.03;
+    this.color = Math.random() > 0.6 ? '#c4622d' : Math.random() > 0.5 ? '#e8845a' : '#d4c9bd';
+    this.life = 0;
+    this.maxLife = Math.random() * 400 + 200;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.life++;
+    if (this.life > this.maxLife || this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    const fade = Math.min(this.life / 40, (this.maxLife - this.life) / 40, 1);
+    ctx.globalAlpha = this.opacity * fade;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+function drawConnections() {
+  const nearby = particles.filter(p => p.opacity > 0.12);
+  for (let i = 0; i < nearby.length; i++) {
+    for (let j = i + 1; j < nearby.length; j++) {
+      const dx = nearby[i].x - nearby[j].x;
+      const dy = nearby[i].y - nearby[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.globalAlpha = (1 - dist/100) * 0.03;
+        ctx.strokeStyle = '#c4622d';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(nearby[i].x, nearby[i].y);
+        ctx.lineTo(nearby[j].x, nearby[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawConnections();
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(loop);
+}
+loop();
+
+// ── SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.12 });
+reveals.forEach(el => obs.observe(el));
+
+// ── MANIFESTO WORD REVEAL
+const words = document.querySelectorAll('.manifesto-quote .word');
+const manifestoObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    words.forEach((w, i) => {
+      setTimeout(() => w.classList.add('visible'), i * 80);
+    });
+    manifestoObs.disconnect();
+  }
+}, { threshold: 0.5 });
+manifestoObs.observe(document.getElementById('manifesto-text'));
+
+// ── NAV SCROLL EFFECT
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) {
+    nav.style.backdropFilter = 'blur(16px)';
+    nav.style.background = 'rgba(226,215,201,.9)';
+    nav.style.borderBottom = '1px solid var(--border)';
+  } else {
+    nav.style.backdropFilter = 'blur(0px)';
+    nav.style.background = 'linear-gradient(to bottom, rgba(226,215,201,.92) 0%, transparent 100%)';
+    nav.style.borderBottom = 'none';
+  }
+});
+</script>
+</body>
+</html>
