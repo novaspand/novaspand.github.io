@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --off-white: #F5F2EC;
+    --terracotta: #C4623A;
+    --terracotta-light: #E8D5CB;
+    --ink: #1A1917;
+    --ink-muted: #6B6660;
+    --ink-faint: #B0ABA5;
+    --surface: #EDE9E1;
+    --border: rgba(26,25,23,0.12);
+  }
+
+  body {
+    background: var(--off-white);
+    font-family: var(--font-sans, 'Georgia', serif);
+    color: var(--ink);
+  }
+
+  .board {
+    padding: 2rem 1.5rem;
+    max-width: 680px;
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .section { margin-bottom: 2.5rem; }
+
+  /* ─── COLOR PALETTE ─── */
+  .palette { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .swatch-box {
+    width: 52px; height: 52px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+  }
+  .swatch-name {
+    font-size: 10px;
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ─── HERO MOCK ─── */
+  .hero-mock {
+    background: var(--off-white);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+  .hero-logo {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .hero-nav-links {
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .hero-h1 {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    max-width: 480px;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    max-width: 340px;
+    margin-bottom: 2rem;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    cursor: pointer;
+  }
+  .hero-aside {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    text-align: right;
+    font-size: 10px;
+    color: var(--ink-faint);
+    line-height: 1.8;
+  }
+
+  /* ─── TYPE SCALE ─── */
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .type-meta {
+    font-size: 10px;
+    color: var(--ink-faint);
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+  .t-display {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .t-h2 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .t-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+  }
+  .t-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .t-terracotta {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--terracotta);
+    font-style: italic;
+  }
+
+  /* ─── COMPONENT STRIP ─── */
+  .comp-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .btn-primary {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--off-white);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .btn-ghost {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--ink);
+    border: 0.5px solid var(--ink);
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .btn-text {
+    font-size: 12px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 1px;
+    background: none;
+    border-top: none; border-left: none; border-right: none;
+    cursor: pointer;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 4px 10px;
+    border: 0.5px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink-muted);
+    background: transparent;
+  }
+  .tag-terra {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--terracotta-light);
+    color: var(--terracotta);
+    border: none;
+  }
+
+  /* ─── SECTION BLOCK MOCK ─── */
+  .section-mock {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 10px;
+  }
+  .section-mock-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .section-mock-h {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .section-mock-body {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+  .divider-line {
+    border: none;
+    border-top: 0.5px solid var(--border);
+    margin: 10px 0;
+  }
+  .work-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 12px;
+  }
+  .work-name { font-weight: 500; color: var(--ink); }
+  .work-desc { color: var(--ink-muted); font-size: 11px; }
+
+  /* ─── REFERENCE CHIPS ─── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ref-chip {
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: var(--off-white);
+  }
+  .ref-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .ref-desc { font-size: 11px; color: var(--ink-muted); line-height: 1.5; }
+  .ref-steal {
+    font-size: 10px;
+    color: var(--terracotta);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ─── ANTI-GOALS ─── */
+  .no-grid { display: flex; flex-direction: column; gap: 6px; }
+  .no-item {
+    font-size: 12px;
+    color: var(--ink-muted);
+    padding: 6px 10px;
+    background: rgba(196,98,58,0.06);
+    border-left: 2px solid var(--terracotta);
+    border-radius: 0 4px 4px 0;
+  }
+  .no-item s { color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="board">
+
+  <!-- COLOUR PALETTE -->
+  <div class="section">
+    <div class="label">01 — Colour system</div>
+    <div class="palette">
+      <div class="swatch"><div class="swatch-box" style="background:#F5F2EC;"></div><div class="swatch-name">Off-white<br>#F5F2EC</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#EDE9E1;"></div><div class="swatch-name">Surface<br>#EDE9E1</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#E8D5CB;"></div><div class="swatch-name">Terra-tint<br>#E8D5CB</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#C4623A;"></div><div class="swatch-name">Terracotta<br>#C4623A</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#1A1917;"></div><div class="swatch-name">Ink<br>#1A1917</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#6B6660;"></div><div class="swatch-name">Muted<br>#6B6660</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#B0ABA5;"></div><div class="swatch-name">Faint<br>#B0ABA5</div></div>
+    </div>
+    <div style="margin-top:10px; font-size:11px; color:var(--ink-muted); line-height:1.7;">
+      Terracotta is the <em>only</em> accent. It appears on: italic headlines, CTA underlines, active nav state, hover on links. Everywhere else is off-white or ink. No other colours on the site.
+    </div>
+  </div>
+
+  <!-- HERO MOCKUP -->
+  <div class="section">
+    <div class="label">02 — Hero section (actual proportions)</div>
+    <div class="hero-mock">
+      <div class="hero-nav">
+        <span class="hero-logo">Novaspand</span>
+        <div class="hero-nav-links">
+          <span>Work</span><span>About</span><span>Contact</span>
+        </div>
+      </div>
+      <div class="hero-h1">We build technology<br>that <em>compounds.</em></div>
+      <div class="hero-sub">Multi-product tech studio. Software, ERP systems, and developer tools — whatever the problem demands. Based in Uganda.</div>
+      <div class="hero-cta">See our work &nbsp;→</div>
+      <div class="hero-aside">
+        novaspand.com<br>
+        Est. 2026
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE SCALE -->
+  <div class="section">
+    <div class="label">03 — Type scale & pairing</div>
+    <div class="type-row">
+      <span class="type-meta">Display / H1</span>
+      <span class="t-display">We build things.</span>
+    </div>
+    <div class="type-row">
+      <span class="type-meta">Accent / Italic</span>
+      <span class="t-terracotta">compounds.</span>
+    </div>
+    <div class="type-row">
+      <span class="type-meta">H2 / Section</span>
+      <span class="t-h2">Software that solves. Systems that scale.</span>
+    </div>
+    <div class="type-row">
+      <span class="type-meta">Body</span>
+      <span class="t-body">We design and build software products — ERP systems, SaaS platforms, developer tools, and whatever comes next.</span>
+    </div>
+    <div class="type-row">
+      <span class="type-meta">Label / Eyebrow</span>
+      <span class="t-label">What we do</span>
+    </div>
+    <div style="margin-top:10px; font-size:11px; color:var(--ink-muted); line-height:1.7;">
+      Font pairing: <strong>Georgia</strong> (or Lora/Playfair) for headings — free, elegant, readable. System sans-serif for body and labels. No Google Fonts CDN needed.
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="section">
+    <div class="label">04 — Interactive components</div>
+    <div class="comp-row">
+      <button class="btn-primary">Get in touch</button>
+      <button class="btn-ghost">See our work</button>
+      <button class="btn-text">Read more →</button>
+    </div>
+    <div class="comp-row">
+      <span class="tag">ERP systems</span>
+      <span class="tag">SaaS</span>
+      <span class="tag">Developer tools</span>
+      <span class="tag-terra">In development</span>
+    </div>
+  </div>
+
+  <!-- SECTION MOCKS -->
+  <div class="section">
+    <div class="label">05 — Section layout patterns</div>
+
+    <div class="section-mock">
+      <div class="section-mock-label">What we do</div>
+      <div class="section-mock-h">Software that solves. Systems that scale.</div>
+      <div class="section-mock-body">We design and build software products — ERP systems, SaaS platforms, developer tools, and whatever comes next. We don't specialise in a category. We specialise in building things that actually work.</div>
+      <hr class="divider-line">
+      <div style="font-size:11px; color:var(--ink-muted);">→ Three capabilities listed as prose — no cards, no icons, no grid</div>
+    </div>
+
+    <div class="section-mock">
+      <div class="section-mock-label">Work</div>
+      <div class="work-row"><span class="work-name">Novaspand ERP</span><span class="work-desc">Enterprise systems for Ugandan business — in dev</span></div>
+      <div class="work-row"><span class="work-name">More shipping soon</span><span class="work-desc">Follow @novaspand for updates</span></div>
+      <hr class="divider-line">
+      <div style="font-size:11px; color:var(--ink-muted);">→ Two-column typographic list. Scales from 0 to 20 projects, no redesign needed.</div>
+    </div>
+  </div>
+
+  <!-- REFERENCE BREAKDOWN -->
+  <div class="section">
+    <div class="label">06 — What to steal from each reference</div>
+    <div class="ref-grid">
+      <div class="ref-chip">
+        <div class="ref-name">Pentagram</div>
+        <div class="ref-desc">Work-first homepage. Type as navigation. Almost no decoration.</div>
+        <div class="ref-steal">Steal: generous whitespace + type hierarchy</div>
+      </div>
+      <div class="ref-chip">
+        <div class="ref-name">Wolff Olins</div>
+        <div class="ref-desc">Yellow accent on near-white. Serif + sans pairing. Bold confidence in copy.</div>
+        <div class="ref-steal">Steal: accent colour restraint + voice</div>
+      </div>
+      <div class="ref-chip">
+        <div class="ref-name">Architecture studios</div>
+        <div class="ref-desc">Slow scroll. Off-white surfaces. Work speaks, studio doesn't shout.</div>
+        <div class="ref-steal">Steal: pacing, warmth, quiet confidence</div>
+      </div>
+      <div class="ref-chip">
+        <div class="ref-name">DeSo / editorial web</div>
+        <div class="ref-desc">Oversized H1 bleeding near the edge. Asymmetric layout earns its place.</div>
+        <div class="ref-steal">Steal: H1 scale + italic accent treatment</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANTI-GOALS -->
+  <div class="section">
+    <div class="label">07 — What Novaspand is not</div>
+    <div class="no-grid">
+      <div class="no-item"><s>Gradient text or glassmorphism</s> — both scream "SaaS template 2022"</div>
+      <div class="no-item"><s>Card grid for features</s> — prose lists are more confident</div>
+      <div class="no-item"><s>Animated counter stats</s> — you're early, don't fake the numbers</div>
+      <div class="no-item"><s>Hero illustration or 3D object</s> — type IS the visual</div>
+      <div class="no-item"><s>Multiple accent colours</s> — terracotta only, always</div>
+      <div class="no-item"><s>"Passionate team of experts"</s> — the copy brief already solved this</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
