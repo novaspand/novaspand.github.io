@@ -74,7 +74,7 @@
 
   /* ── SKIP LINK ── */
   .skip-link {
-    position: fixed; top: -100%; left: 16px; z-index: 200;
+    position: fixed; top: -100%; left: 16px; z-index: 300;
     padding: 12px 24px;
     background: var(--accent);
     color: var(--bg);
@@ -600,7 +600,7 @@
 
   /* ── FLOATING BUTTONS ── */
   .floating-btns {
-    position: fixed; bottom: 32px; right: 32px; z-index: 200;
+    position: fixed; bottom: 32px; right: 32px; z-index: 250;
     display: flex; flex-direction: column; gap: 12px;
   }
   .float-btn {
@@ -627,7 +627,7 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
+    nav { padding: 24px 32px; }
     .nav-toggle { display: flex; }
     .nav-links {
       position: fixed; top: 0; left: 0; right: 0;
@@ -642,9 +642,17 @@
     .nav-links.open { transform: translateY(0); }
     .nav-links li { border-bottom: 1px solid var(--border); }
     .nav-links a { display: block; padding: 16px 0; font-size: 14px; }
+    .section { padding: 100px 32px; }
+    .section-rule { margin: 0 32px; }
+    .contact-grid { gap: 48px; }
+    .project-row { gap: 40px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
     .section { padding: 80px 24px; }
     .section-rule { margin: 0 24px; }
-    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .project-row { grid-template-columns: 1fr; gap: 8px; }
     .offer-item { grid-template-columns: 1fr; gap: 8px; }
     footer { padding: 40px 24px; flex-direction: column; text-align: center; }
